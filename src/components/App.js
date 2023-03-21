@@ -27,6 +27,7 @@ function App() {
   const [deletingCard, setDeletingCard] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('ya@mail.ru');
   const [err, setErr] = useState(false);
 
   useEffect(() => {
@@ -148,7 +149,7 @@ function App() {
   return (
     <div>
       <CurrentUserContext.Provider value={{currentUser}}>
-        <Header />
+        <Header email={email} />
         <Routes>
           <Route
             path="/"
