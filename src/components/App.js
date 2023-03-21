@@ -11,6 +11,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import ConfirmDeletePopup from './ConfirmDeletePopup';
+import InfoTooltip from "./InfoTooltip";
 import { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 
@@ -21,10 +22,12 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmDeletePopupOpen, setIsConfirmDeletePopupOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [imagePopupCard, setImagePopupCard] = useState({});
   const [deletingCard, setDeletingCard] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [err, setErr] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getProfile(), api.getCards()])
@@ -56,6 +59,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
+    setIsInfoTooltipOpen(false);
     setImagePopupCard({});
   };
 
@@ -72,7 +76,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || imagePopupCard) {
+    if (isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isConfirmDeletePopupOpen || imagePopupCard || isInfoTooltipOpen) {
       document.addEventListener('keydown', handleCloseByEsc);
       document.addEventListener('mousedown', handleCloseByClickOnOverlay);
     }
@@ -81,7 +85,7 @@ function App() {
       document.removeEventListener('keydown', handleCloseByEsc);
       document.removeEventListener('mousedown', handleCloseByClickOnOverlay);
     };
-  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, isConfirmDeletePopupOpen, imagePopupCard]);
+  }, [isEditAvatarPopupOpen, isEditProfilePopupOpen, isAddPlacePopupOpen, isConfirmDeletePopupOpen, imagePopupCard, isInfoTooltipOpen]);
 
   const handleCardLike = (card) => {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -167,7 +171,8 @@ function App() {
             path="/sign-up"
             element={
               <Register
-
+                // setErr={setErr}
+                setIsInfoTooltipOpen={setIsInfoTooltipOpen}
               />
             }
           />
@@ -175,7 +180,10 @@ function App() {
             path="/sign-in"
             element={
               <Login
-
+                // onLogin={handleLogin}
+                // setErr={setErr}
+                setIsInfoTooltipOpen={setIsInfoTooltipOpen}
+                // setEmail={setEmail}
               />
             }
           />
@@ -187,6 +195,11 @@ function App() {
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} isLoading={isLoading} />
         <ConfirmDeletePopup isOpen={isConfirmDeletePopupOpen} onClose={closeAllPopups} onCardDelete={handleCardDelete} card={deletingCard} />
         <ImagePopup card={imagePopupCard} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={closeAllPopups}
+          err={err}
+        />
       </CurrentUserContext.Provider>
     </div>
   );
