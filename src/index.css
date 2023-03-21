@@ -54,3 +54,5 @@
 @import url(./blocks/form-auth/__heading/form-auth__heading.css);
 @import url(./blocks/form-auth/__input/form-auth__input.css);
 @import url(./blocks/form-auth/__save-button/form-auth__save-button.css);
+@import url(./blocks/form-auth/__question/form-auth__question.css);
+@import url(./blocks/form-auth/__link/form-auth__link.css);
