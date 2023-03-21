@@ -1,3 +1,7 @@
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import ProtectedRouteElement from "./ProtectedRoute";
+import Login from "./Login";
+import Register from "./Register";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Header from './Header';
 import Main from './Main';
@@ -20,6 +24,7 @@ function App() {
   const [imagePopupCard, setImagePopupCard] = useState({});
   const [deletingCard, setDeletingCard] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getProfile(), api.getCards()])
@@ -140,7 +145,42 @@ function App() {
     <div>
       <CurrentUserContext.Provider value={{currentUser}}>
         <Header />
-        <Main onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} cards={cards} onCardLike={handleCardLike} onDeleteButtonClick={handleDeleteButtonClick} onCardDelete={handleCardDelete} />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRouteElement
+                element={Main}
+                loggedIn={loggedIn}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onDeleteButtonClick={handleDeleteButtonClick}
+                onCardDelete={handleCardDelete}
+              />
+            }
+          />
+          <Route
+            path="/sign-up"
+            element={
+              <Register
+
+              />
+            }
+          />
+          <Route
+            path="/sign-in"
+            element={
+              <Login
+
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
         <Footer />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} isLoading={isLoading} />
         <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} />
