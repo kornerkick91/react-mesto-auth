@@ -49,3 +49,8 @@
 @import url(./blocks/popup/__image-container/popup__image-container.css);
 @import url(./blocks/popup/__image/popup__image.css);
 @import url(./blocks/popup/__image-heading/popup__image-heading.css);
+
+@import url(./blocks/form-auth/form-auth.css);
+@import url(./blocks/form-auth/__heading/form-auth__heading.css);
+@import url(./blocks/form-auth/__input/form-auth__input.css);
+@import url(./blocks/form-auth/__save-button/form-auth__save-button.css);
