@@ -14,6 +14,7 @@ import ConfirmDeletePopup from './ConfirmDeletePopup';
 import InfoTooltip from "./InfoTooltip";
 import { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import { auth } from "../utils/auth";
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -27,17 +28,77 @@ function App() {
   const [deletingCard, setDeletingCard] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState('ya@mail.ru');
+  const [email, setEmail] = useState('');
   const [err, setErr] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    Promise.all([api.getProfile(), api.getCards()])
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      auth
+        .checkToken(jwt)
+        .then((res) => {
+          if (res) {
+            setLoggedIn(true);
+            navigate('/');
+            setEmail(res.data.email);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  }, []);
+
+  const handleSignOut = () => {
+    setEmail('');
+    localStorage.removeItem('jwt');
+  };
+
+  useEffect(() => {
+    loggedIn && Promise.all([api.getProfile(), api.getCards()])
       .then(([user, cards]) => {
         setCurrentUser(user);
         setCards(cards);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [loggedIn]);
+
+  const handleRegister = (email, password) => {
+    if (!email || !password) {
+      return;
+    }
+    auth.register(email, password)
+      .then((res) => {
+        setErr(false);
+        setIsInfoTooltipOpen((prev) => !prev);
+        navigate('/sign-in', { replace: true });
+      })
+      .catch((err) => {
+        setErr(true);
+        setIsInfoTooltipOpen((prev) => !prev);
+        console.log(err);
+      });
+  };
+
+  const handleLogin = (email, password) => {
+    if (!email || !password) {
+      return;
+    }
+    auth.authorize(email, password)
+      .then((data) => {
+        if (data.token) {
+          setLoggedIn(true);
+          localStorage.setItem('jwt', data.token);
+          setEmail(email);
+          navigate('/');
+        }
+      })
+      .catch((err) => {
+        setErr(true);
+        setIsInfoTooltipOpen((prev) => !prev);
+        console.log(err);
+      });
+  };
 
   const handleEditAvatarClick = () => {
     setIsEditAvatarPopupOpen(true);
@@ -149,7 +210,7 @@ function App() {
   return (
     <div>
       <CurrentUserContext.Provider value={{currentUser}}>
-        <Header email={email} />
+        <Header email={email} onSignOut={handleSignOut} />
         <Routes>
           <Route
             path="/"
@@ -170,21 +231,16 @@ function App() {
           />
           <Route
             path="/sign-up"
-            element={
-              <Register
-                // setErr={setErr}
-                setIsInfoTooltipOpen={setIsInfoTooltipOpen}
-              />
-            }
+            element={<Register onRegister={handleRegister} />}
           />
           <Route
             path="/sign-in"
             element={
               <Login
-                // onLogin={handleLogin}
-                // setErr={setErr}
+                onLogin={handleLogin}
+                setErr={setErr}
                 setIsInfoTooltipOpen={setIsInfoTooltipOpen}
-                // setEmail={setEmail}
+                setEmail={setEmail}
               />
             }
           />

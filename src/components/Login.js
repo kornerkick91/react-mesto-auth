@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [formValue, setFormValue] = useState({
     email: '',
     password: ''
@@ -18,7 +17,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    onLogin(formValue.email, formValue.password);
   }
 
   return (
