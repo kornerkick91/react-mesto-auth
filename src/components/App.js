@@ -1,7 +1,7 @@
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
-import ProtectedRouteElement from "./ProtectedRoute";
-import Login from "./Login";
-import Register from "./Register";
+import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import ProtectedRouteElement from './ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Header from './Header';
 import Main from './Main';
@@ -11,10 +11,10 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
 import ConfirmDeletePopup from './ConfirmDeletePopup';
-import InfoTooltip from "./InfoTooltip";
+import InfoTooltip from './InfoTooltip';
 import { useState, useEffect } from 'react';
 import { api } from '../utils/api';
-import { auth } from "../utils/auth";
+import { auth } from '../utils/auth';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
@@ -36,8 +36,7 @@ function App() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      auth
-        .checkToken(jwt)
+      auth.checkToken(jwt)
         .then((res) => {
           if (res) {
             setLoggedIn(true);
@@ -68,7 +67,7 @@ function App() {
       return;
     }
     auth.register(email, password)
-      .then((res) => {
+      .then(() => {
         setErr(false);
         setIsInfoTooltipOpen((prev) => !prev);
         navigate('/sign-in', { replace: true });

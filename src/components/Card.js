@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { useContext } from 'react';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Card({ card, onCardClick, onCardLike, onDeleteButtonClick }) {
   const { currentUser } = useContext(CurrentUserContext);
