@@ -30,6 +30,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [err, setErr] = useState(false);
+  const [infoTooltipText, setInfotooltipText] = useState('');
 
   const navigate = useNavigate();
 
@@ -69,11 +70,13 @@ function App() {
     auth.register(email, password)
       .then(() => {
         setErr(false);
+        setInfotooltipText('Вы успешно зарегистрировались!');
         setIsInfoTooltipOpen((prev) => !prev);
         navigate('/sign-in', { replace: true });
       })
       .catch((err) => {
         setErr(true);
+        setInfotooltipText('Что-то пошло не так! Попробуйте ещё раз.');
         setIsInfoTooltipOpen((prev) => !prev);
         console.log(err);
       });
@@ -94,6 +97,7 @@ function App() {
       })
       .catch((err) => {
         setErr(true);
+        setInfotooltipText('Что-то пошло не так! Попробуйте ещё раз.');
         setIsInfoTooltipOpen((prev) => !prev);
         console.log(err);
       });
@@ -234,14 +238,7 @@ function App() {
           />
           <Route
             path="/sign-in"
-            element={
-              <Login
-                onLogin={handleLogin}
-                setErr={setErr}
-                setIsInfoTooltipOpen={setIsInfoTooltipOpen}
-                setEmail={setEmail}
-              />
-            }
+            element={<Login onLogin={handleLogin} />}
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
@@ -255,6 +252,7 @@ function App() {
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
           err={err}
+          infoTooltipText={infoTooltipText}
         />
       </CurrentUserContext.Provider>
     </div>
